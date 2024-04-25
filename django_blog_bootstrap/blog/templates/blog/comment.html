@@ -1,0 +1,86 @@
+{% for comment in comments %}
+<!-- child comment body -->
+<div class="container-child-comment" style="width: 1000px; margin-left:1%; margin-right:5%">
+    <div class="row">
+        <div class="col-1" style="max-width: 2px;">
+            <i class="bi bi-person-circle" style="font-size: 8px;"></i>
+        </div>
+        <div class="col-10 p-1">
+            <div class="col-8 text-muted" style="font-size: 12px;">{{ comment.user }}</div>
+        </div>
+    </div>
+
+    <div class="col-7">{{ comment.content }}</div>
+    {% if user.is_authenticated %}
+    <div class="row mb-1">
+        <!-- like/unlike  -->
+        <div class="col-1">
+            {% if user in comment.likes.all %}
+            <form action="{% url 'comment_actions' action='unlike' pk=comment.pk %}" method="post" class="like-form">
+                {% csrf_token %}
+                <button type="submit" class="like-button" style="border: none; background: none; cursor: pointer;"><i
+                        class="bi bi-heart-fill" style="color: red;"></i></button>
+            </form>
+            {% else %}
+            <form action="{% url 'comment_actions' action='like' pk=comment.pk %}" method="post" class="like-form">
+                {% csrf_token %}
+                <button type="submit" class="like-button" style="border: none; background: none; cursor: pointer;"><i
+                        class="bi bi-heart"></i></button>
+            </form>
+            {% endif %}
+            <form action="{% url 'comment_actions' action='unlike' pk=comment.pk %}" method="post" class="unlike-form">
+
+            </form>
+            <div class="row-1" style="font-size: 11px; margin-left:10px;">{{ comment.count_likes }}</div>
+        </div>
+        <!-- comment delete -->
+        {% if comment.user == request.user %}
+        <div class="col-1">
+            <form action="{% url 'comment_actions' action='delete' pk=comment.pk %}" method="post" class="delete-form">
+                {% csrf_token %}
+                <button type="submit" class="delete-button" style="border: none; background: none; cursor: pointer;"><i
+                        class="bi bi-trash"></i></button>
+            </form>
+        </div>
+        {% endif %}
+        <!-- message icon -->
+        <div class="col-1 add-comment-button">
+            <button type="submit" class="add-comment-button" data-comment-id="{{ comment.pk }}"
+                style="border: none; background: none; cursor: pointer;"><i class="bi bi-chat-dots"></i></button>
+            </form>
+        </div>
+        <!-- form appear after clicking on message icon -->
+        <div class="row-8 message-form" style="display: none;" data-comment-id="{{ comment.pk }}">
+            <form action="{% url 'comment_actions' action='comment' pk=comment.pk %}" method="post" class="like-form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-5 col-sm-3">
+                        <input type="text" class="form-control" name="content">
+                    </div>
+                    <div class="col-12 col-md-auto mt-1">
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-send"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    <!-- recursive calling child comment -->
+    {% if comment.children.all %}
+    <div class="col-5 ms-3">
+        {% include 'blog/comment.html' with comments=comment.children.all %}
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
+
+<style>
+    @media (max-width: 767px) {
+        .container-child-comment {
+            overflow-x: auto;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+</style>

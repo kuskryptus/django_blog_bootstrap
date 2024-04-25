@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+<!-- header -->
+
+<!-- post edit view -->
+{% block content %}
+<div class="container d-flex justify-content-center" style="margin-top: 5rem;">
+    <div class="row">
+        <div class="col-md-12 mx-auto ">
+            <h1 class="form-title mt-5 mb-4" style="font-size: 50px;">Edit Post</h1>
+            <form method="POST" enctype="multipart/form-data" style="margin-top: 5rem;">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.title |as_crispy_field }}
+                </div>
+                <div class="mb-3">
+                    {{ form.media }}
+                    {{ form.body }}
+                </div>
+                <div class="mb-3">
+                    {{ form.image |as_crispy_field}}
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

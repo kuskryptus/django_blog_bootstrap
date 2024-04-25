@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Shadows+Into+Light&display=swap");
+
+body {
+  background-image: url("{% static 'blog/img/blog_background.jpg' %}");
+  background-size: cover;
+  background-position: center;
+}
+
+/* .white-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+} */
+
+.commissioner-font {
+  font-family: "Commissioner", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings: "slnt" 0, "FLAR" 0, "VOLM" 0;
+}
+
+.bg-light {
+  z-index: 20;
+  position: relative;
+}
+
+.navbar {
+  background-color: transparent;
+}
+
+.medium-width {
+  width: 300px;
+}
+
+.list-group .list-group-item.active {
+  border-color: rgb(141, 141, 141);
+  color: black;
+  border: double 3px, black;
+}
+
+.follow-us-text {
+  font-size: 2em;
+  font-weight: 400;
+  font-family: "Shadows Into Light", cursive;
+}
+
+.latest-post-heading {
+  font-family: "Shadows Into Light", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.child-comment {
+  margin-left: 10rem;
+}
+
+/* Ensures the image fills its container */
+.post-image {
+  max-height: 500px;
+  width: 100%;
+  object-fit: contain;
+}
+
+.comment {
+  margin-left: 0;
+}
+
+.child-comment {
+  margin-left: 20px;
+}
+
+@media (max-width: 767px) {
+  .container-child-comment {
+    width: 500px;
+    overflow-x: auto;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

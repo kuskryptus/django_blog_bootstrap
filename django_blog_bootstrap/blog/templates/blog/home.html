@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<!-- Header -->
+<div class="container">
+    <div class="col justify-content-center mb-5" style="margin-top: 3rem">
+        <div class="row position-relative text-center d-flex justify-content-center mb-5">
+            <div class="row">
+                <h1 class="text-dark commissioner-font" style="font-size: 50px;">Your Blogging Journey Starts Here ...
+                </h1>
+            </div>
+        </div>
+        <!-- introduction paragraph  -->
+        <div class="text-center d-flex justify-content-center" style="margin-top: 10rem">
+            <div class="col-md-8">
+                <p class="lead" style="font-weight: 400;"> Welcome to our blog, a journey of discovery and connection.
+                    With captivating stories and insightful musings, each page offers new perspectives.
+                    Join our community in exploring endless learning opportunities and forging meaningful connections.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- latest post heading -->
+<div class="container" style="margin-top: 8rem ; margin-bottom: 3rem;">
+    <div class="row justify-content-center">
+        <div class="col-md-6 me-3  mb-3">
+            <h4 class="latest-post-heading"><strong>latest post:</h4></strong>
+        </div>
+    </div>
+    <!-- latest post block -->
+    <div class="row justify-content-center">
+        <div class="card m-auto" style="width: 45rem;">
+            <div class="card-body">
+                <h5 class="card-title mb-4">{{ latest_post.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ latest_post.published_date }}</h6>
+                <p class="card-text">{{ latest_post.truncated_body|safe }}</p>
+                <a href="{% url 'post_detail' latest_post.pk %}" class="btn btn-secondary btn-sm mb-3">View Post</a>
+                <img src="{{ latest_post.image.url }}" alt="" class="card-img-bottom">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

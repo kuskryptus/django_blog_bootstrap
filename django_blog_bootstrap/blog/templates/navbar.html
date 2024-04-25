@@ -1,0 +1,50 @@
+<!-- Navbar -->
+{% load static %}
+
+<nav class="navbar navbar-expand-md" id="mainNav">
+    <div class="container-fluid d-flex ">
+        <!-- Blog logo -->
+        <a class="navbar-brand text-dark ms-5 commissioner-font" href="{% url 'home' %}">Blog</a>
+        <img src="{% static 'blog/icons/icons8-blog-64.png' %}" alt="logo-icon">
+        <!-- navbar links -->
+        <div class="collapse navbar-collapse commissioner-font " id="navbarNav">
+            <ul class="navbar-nav ms-auto ">
+                <li class="nav-item">
+                    <a class="nav-link text-dark px-lg-3 py-3 py-lg-3" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark px-lg-3 py-3 py-lg-3" href="{% url 'post_list' %}">Posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark px-lg-3 py-3 py-lg-3" href="{% url 'post_add' %}">Create Post</a>
+                </li>
+            </ul>
+        </div>
+        <!-- user-icon and logout button -->
+        <div class="user-section">
+            {% if user.is_authenticated %}
+            <div>
+                <div class="d-flex justify-content-center">
+                    <div>
+                        <i class="bi bi-person-circle" style="font-size: 23px;"></i>
+                    </div>
+                    <div>
+                        <form action="{% url 'logout' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="ml-1 mx-1 ms-4"><i class="bi bi-box-arrow-right"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="ms-3">
+                    {{ user.email }}
+                </div>
+            </div>
+            {% else %}
+            <a class="btn btn-outline-dark ms-3" href="{% url 'login' %}">Login</a>
+            {% endif %}
+
+        </div>
+    </div>
+</nav>
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />

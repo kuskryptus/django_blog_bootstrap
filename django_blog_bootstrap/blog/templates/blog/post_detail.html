@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<!-- post -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- post edit button for post author and admin -->
+        {% if post.author == user or user.is_staff %}
+        <div class="mb-2 position-absolute" style="max-width: fit-content;">
+            <a href="{% url 'post_edit' post.pk %}" class="btn btn-secondary btn-sm" title="edit"><span class="mt-1"><i
+                        class="bi bi-pen"></i></span></a>
+            {% endif %}
+        </div>
+
+        <div class="col">
+            <div class="card" style="max-width: 1000px; margin: 0 auto;">
+                <div class="row">
+                    <div class="col-12  mt-3">
+                        <img src="{{ post.image.url }}" class="card-img-top img-fluid post-image"
+                            alt="{{ post.title }}">
+                    </div>
+                    <!-- post unlike -->
+                    {% if user.is_authenticated %}
+                    {% if user in post.likes.all %}
+                    <div class="col-1 d-flex justify-content-center me-4 mt-3">
+                        <form action="{% url 'post_like' action='post_unlike' pk=post.pk %}" method="post"
+                            class="like-form">
+                            {% csrf_token %}
+                            <button type="submit" class="like-button"
+                                style="border: none; background: none; cursor: pointer; height:5px">
+                                <i class="bi bi-heart-fill" style="color: red;"></i></button>
+                        </form>
+                    </div>
+                    <!-- post like -->
+                    {% else %}
+                    <div class="col-1 d-flex justify-content-center me-4 mt-3">
+                        <form action="{% url 'post_like' action='post_like' pk=post.pk %}" method="post"
+                            class="like-form">
+                            {% csrf_token %}
+                            <button type="submit" class="like-button"
+                                style="border: none; background: none; cursor: pointer; height:5px">
+                                <i class="bi bi-heart"></i></button>
+                        </form>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <!-- post body -->
+                <div class="card-body">
+                    <h2 class="card-title mt-3 mb-4">{{ post.title }}</h2>
+                    <div class="row mb-4">
+                        <div class="col text-muted mb-3">Author | {{ post.author }}</div>
+                        <div class="col-auto text-muted mb-3">Date | {{ post.published_date }}</div>
+                    </div>
+                    <p class="card-text">{{ post.body | safe }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!------- add comment new row ------>
+    {% if user.is_authenticated %}
+    <div class="row justify-content-center mt-3" style="max-width: 1000px; margin: 0 auto;">
+        <div class="col-auto mt-1"><i class="bi bi-plus-square d-inline" style="font-size: 20px;"></i></div>
+        <div class="col-8">
+            <form id="comment-form" method="post" action="{% url 'comment_create' post.pk %}">
+                {% csrf_token %}
+                {{ form.content | as_crispy_field }}
+        </div>
+        <div class="col">
+            <button type="submit" id="submit-btn" style="border: none; background: none; cursor: pointer;">
+                <span class="material-symbols-outlined mt-1">send</span>
+            </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    <!------- add comment new row ------>
+
+
+    <!----- comments for post ------->
+    <div class="row comment mt-1 mb-2" style="max-width: 1000px; margin: 0 auto; background-color:rgb(255, 255, 255)">
+        <p><strong>Comments...</strong></p>
+        {% if post.comments %}
+        <!-- comment body -->
+        {% for comment in comments %}
+        <div class="row-5">
+            <div class="row">
+                <div class="row">
+                    <div class="col-1" style="max-width: 2px;">
+                        <i class="bi bi-person-circle" style="font-size: 8px;"></i>
+                    </div>
+                    <div class="col-10 p-1">
+                        <div class="col-8 text-muted" style="font-size: 12px;">{{ comment.user }}</div>
+                    </div>
+                </div>
+                <div class="col-xs-2 text-muted" style="font-size: 11px;">{{ comment.created_date}}</div>
+            </div>
+            <hr class="muted-line" style="margin-top: 0; margin-bottom: 7px;">
+            <div class="col">
+                <div class="row">
+                    <div class="col comment">
+                        <p>{{ comment.content }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- interaction section -->
+            {% if user.is_authenticated %}
+            <div class="row mb-2 text-center">
+                <!-- like/unlike  -->
+                <div class="col-1">
+                    {% if user in comment.likes.all %}
+                    <form action="{% url 'comment_actions' action='unlike' pk=comment.pk %}" method="post"
+                        class="like-form">
+                        {% csrf_token %}
+                        <button type="submit" class="like-button"
+                            style="border: none; background: none; cursor: pointer;"><i class="bi bi-heart-fill"
+                                style="color: red;"></i>
+                            <div class="col-2 ms-1" style="font-size: 11px;">{{ comment.count_likes }}</div>
+                        </button>
+                    </form>
+                    {% else %}
+                    <form action="{% url 'comment_actions' action='like' pk=comment.pk %}" method="post"
+                        class="like-form">
+                        {% csrf_token %}
+                        <button type="submit" class="like-button"
+                            style="border: none; background: none; cursor: pointer;"><i
+                                class="bi bi-heart"></i></button>
+                    </form>
+                    {% endif %}
+                    <form action="{% url 'comment_actions' action='unlike' pk=comment.pk %}" method="post"
+                        class="unlike-form">
+
+                    </form>
+
+                </div>
+                <!-- comment delete -->
+                {% if comment.user == request.user %}
+                <div class="col-1">
+                    <form action="{% url 'comment_actions' action='delete' pk=comment.pk %}" method="post"
+                        class="delete-form">
+                        {% csrf_token %}
+                        <button type="submit" class=" col-1 delete-button"
+                            style="border: none; background: none; cursor: pointer;"><i
+                                class="bi bi-trash"></i></button>
+                    </form>
+                </div>
+                {% endif %}
+                <!-- message icon -->
+                <div class="col-1 add-comment-button">
+                    <button type="submit" class="add-comment-button" data-comment-id="{{ comment.pk }}"
+                        style="border: none; background: none; cursor: pointer;"><i
+                            class="bi bi-chat-dots"></i></button>
+                    </form>
+                </div>
+                <!-- form appear after clicking on message icon -->
+                <div class="col-auto message-form" style="display: none;" data-comment-id="{{ comment.pk }}">
+                    <form action="{% url 'comment_actions' action='comment' pk=comment.pk %}" method="post"
+                        class="like-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 col-md-9">
+                                <input type="text" class="form-control" name="content">
+                            </div>
+                            <div class="col-12 col-md-auto mt-1">
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-send"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            {% if comment.children.all %}
+            <div class="row replies ms-3">
+                {% include 'blog/comment.html' with comments=comment.children.all%}
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- expanding form-control -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const messageIconButtons = document.querySelectorAll('.add-comment-button');
+
+        messageIconButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const commentId = this.getAttribute('data-comment-id');
+                const messageForm = document.querySelector(`.message-form[data-comment-id="${commentId}"]`);
+
+                if (messageForm.style.display === 'none') {
+                    messageForm.style.display = 'block';
+                } else {
+                    messageForm.style.display = 'none';
+                }
+            });
+        });
+    })
+</script>
+
+{% endblock content %}
